@@ -42,7 +42,7 @@ class Pr1
             }
     }
 
-    void currencyConverter(int[] prises, string[] products, int quan_oper)
+    static void CurrencyConverter(int[] prises, string[] products, int quan_oper)
     {
         Console.WriteLine("Выберите в какую валюту хотите перевести: ");
         Console.WriteLine("1. Доллар");
@@ -103,6 +103,17 @@ class Pr1
         }
     }
 
+    static void SearchByName(string[] products, int[] prises, int quan_oper)
+    {
+        Console.WriteLine("Введите товар или услугу стоимость которой хотите увидеть: ");
+        string pos = Console.ReadLine();
+        for (int i = 0; i < quan_oper; i++)
+        {
+            if (pos == products[i]) Console.WriteLine(prises[i]);
+            else Console.WriteLine("Товар отсутствует");
+        }
+    }
+
     static void Main(String[] args)
     {
         Console.Write("Введите кол-во операций: ");
@@ -145,8 +156,10 @@ class Pr1
                     Output(prises, products, quan_oper);
                     break;
                 case 4:
+                    CurrencyConverter(prises, products, quan_oper);
                     break;
                 case 5:
+                    SearchByName(products, prises, quan_oper);
                     break;
 
             }
