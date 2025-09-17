@@ -12,6 +12,19 @@ class Pr1
         }
     }
 
+    static void Stat(int[] prises, int quan_oper)
+    {
+        int sum = 0, average, min = prises[0], max = prises[0];
+        for (int i = 0; i < quan_oper; i++)
+        {
+            sum += prises[i];
+            if (min > prises[i]) min = prises[i];
+            if (max < prises[i]) max = prises[i];  
+        }
+        average = sum / quan_oper;
+        Console.WriteLine(average.ToString(), max.ToString(), min.ToString(), sum.ToString());
+    }
+
     static void Main(String[] args)
     {
         Console.Write("Введите кол-во операций: ");
@@ -47,6 +60,7 @@ class Pr1
                     Output(prises, products, quan_oper);
                     break;
                 case 2:
+                    Stat(prises, quan_oper);
                     break;
                 case 3:
                     break;
@@ -57,10 +71,8 @@ class Pr1
 
             }
 
-            if (choice == 0)
-            {
-                break;
-            }
+            if (choice == 0) break;
+          
         }
         
         ;
