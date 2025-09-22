@@ -67,11 +67,28 @@ class Programm
         }
         else Console.WriteLine("Список пуст");
     }
-    
-    static void Main(string[] args)
+
+    static void Order(List<Product> products)
+    {
+        foreach (var product in products)
+            Console.WriteLine($"{product.Id} - {product.Name}");
+
+        Console.Write("Введите id товара, который хотите удалить: ");
+        int index = Convert.ToInt32(Console.ReadLine());
+    }
+
+        static void Main(string[] args)
     {
         List<Product> products = new List<Product>();
-        Add(products);
-        Remove(products);
+        while (true) 
+        {
+            Console.WriteLine("====Меню====");
+            Console.WriteLine("1. Добавить товар");
+            Console.WriteLine("2. Удалить товар");
+            Console.WriteLine("3. Заказать товар");
+            Console.WriteLine("4. Продать товар");
+            Console.WriteLine("5. Поиск товаров (по коду, названию и категории)");
+            Console.WriteLine("0. Выход");
+        }
     }
 }
