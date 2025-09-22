@@ -52,6 +52,20 @@ class Programm
     {
         products.Add(new Product());
     }
+
+    static void Remove(List<Product> products) 
+    {
+        if (products.Count > 0)
+        {
+            foreach (var product in products)
+                Console.WriteLine($"{product.Id} - {product.Name}");
+
+            Console.Write("Введите id товара, который хотите удалить: ");
+            int index = Convert.ToInt32(Console.ReadLine());
+            products.RemoveAt(index);
+        }
+        else Console.WriteLine("Список пуст");
+    }
     
     static void Main(string[] args)
     {
