@@ -62,7 +62,8 @@ class Programm
 
             Console.Write("Введите id товара, который хотите удалить: ");
             int index = Convert.ToInt32(Console.ReadLine());
-            products.RemoveAt(index);
+            products.Remove(products[index - 1]);
+            Console.WriteLine("Товар удален");
         }
         else Console.WriteLine("Список пуст");
     }
@@ -70,6 +71,7 @@ class Programm
     static void Main(string[] args)
     {
         List<Product> products = new List<Product>();
-        
+        Add(products);
+        Remove(products);
     }
 }
