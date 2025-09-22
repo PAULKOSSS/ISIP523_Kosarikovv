@@ -39,6 +39,7 @@ class Product
 
         int categoryChoice = Convert.ToInt32(Console.ReadLine());
         Categories Сategory = (Categories)(categoryChoice - 1);
+        count++;
     }    
 }
 
@@ -47,9 +48,11 @@ class Product
 class Programm
 {
     
-
+    static void Add(List<Product> products)
+    {
+        products.Add(new Product());
+    }
     
-
     static void Main(string[] args)
     {
         List<Product> products = new List<Product>();
