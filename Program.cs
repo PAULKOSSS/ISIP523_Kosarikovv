@@ -120,6 +120,65 @@ class Programm
         else Console.WriteLine("Список пуст");
     }
 
+    static void Search(List<Product> products)
+    {
+        bool flag = false;
+        if (products.Count > 0)
+        {
+            Console.Write("Варианты поиска: по коду(1), названию(2) и категории(3): ");
+            int choice = Convert.ToInt32(Console.ReadLine());
+            switch (choice) 
+            {
+                case 1:
+                    Console.Write("Введите id товара, который хотите найти: ");
+                    int index = Convert.ToInt32(Console.ReadLine());
+                    foreach (var product in products)
+                    {
+                        if (index == product.Id) {
+                            Console.WriteLine($"Товар найден: название - {product.Name}, цена - {product.Price}, количество - {product.Quantity}, наличие - {product.IsAvaliable}, категория - {product.Category}");
+                            flag = true;
+                        } 
+                        if (!flag) Console.WriteLine("Такого товара нет");
+                    }
+                    break;
+                case 2:
+                    Console.Write("Введите id товара, который хотите найти: ");
+                    string name = Console.ReadLine();
+                    foreach (var product in products)
+                    {
+                        //if () Console.WriteLine($"Товар найден: название - {product.Name}, цена - {product.Price}, количество - {product.Quantity}, наличие - {product.IsAvaliable}, категория - {product.Category}");
+                        //else Console.WriteLine("Такого товара нет");
+                        if (name == product.Name)
+                        {
+                            Console.WriteLine($"Товар найден: название - {product.Name}, цена - {product.Price}, количество - {product.Quantity}, наличие - {product.IsAvaliable}, категория - {product.Category}");
+                            flag = true;
+                        }
+                        if (!flag) Console.WriteLine("Такого товара нет");
+                    }
+                    break;
+                case 3:
+                    Console.WriteLine("Выберите категорию для поиска:");
+                    Console.WriteLine("1. Продукты");
+                    Console.WriteLine("2. Косметика");
+                    Console.WriteLine("3. Электроника");
+                    int categoryChoice = Convert.ToInt32(Console.ReadLine());
+                    foreach (var product in products)
+                    {
+                        //if () Console.WriteLine($"Товар найден: название - {product.Name}, цена - {product.Price}, количество - {product.Quantity}, наличие - {product.IsAvaliable}, категория - {product.Category}");
+                        //else Console.WriteLine("Такого товара нет");
+                        if ((Categories)(categoryChoice - 1) == product.Category)
+                        {
+                            Console.WriteLine($"Товар найден: название - {product.Name}, цена - {product.Price}, количество - {product.Quantity}, наличие - {product.IsAvaliable}, категория - {product.Category}");
+                            flag = true;
+                        }
+                        if (!flag) Console.WriteLine("Такого товара нет");
+                    }
+                    break;
+            }
+        }
+        else Console.WriteLine("Список пуст");
+    }
+
     static void Main(string[] args)
     {
         List<Product> products = new List<Product>();
@@ -136,6 +195,7 @@ class Programm
             switch (choice) 
             {
                 case 0:
+                    Console.WriteLine("Adios");
                     break;
                 case 1:
                     Add(products);
@@ -147,8 +207,10 @@ class Programm
                     Order(products);
                     break;
                 case 4:
+                    Sell(products);
                     break;
                 case 5:
+                    Search(products);
                     break;
             }
         }
