@@ -62,33 +62,95 @@ class Programm
 
             Console.Write("Введите id товара, который хотите удалить: ");
             int index = Convert.ToInt32(Console.ReadLine());
-            products.Remove(products[index - 1]);
-            Console.WriteLine("Товар удален");
+            foreach (var product in products)
+            {
+                if (index == product.Id)
+                {
+                    products.Remove(product);
+                    Console.WriteLine("Товар удалён");
+                }
+            }
         }
         else Console.WriteLine("Список пуст");
     }
 
     static void Order(List<Product> products)
     {
-        foreach (var product in products)
-            Console.WriteLine($"{product.Id} - {product.Name}");
+        if (products.Count > 0)
+        {
+            foreach (var product in products)
+                Console.WriteLine($"{product.Id} - {product.Name}");
 
-        Console.Write("Введите id товара, который хотите удалить: ");
-        int index = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Введите id товара, который хотите заказать: ");
+            int index = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Введите количество: ");
+            int n = Convert.ToInt32(Console.ReadLine());
+            foreach (var product in products)
+            {
+                if (index == product.Id)
+                {
+                    product.Quantity += n;
+                    Console.WriteLine($"Товар заказан в количестве {n}");
+                }
+            }
+        }
+        else Console.WriteLine("Список пуст");
     }
 
-        static void Main(string[] args)
+    static void Sell(List<Product> products)
+    {
+        if (products.Count > 0)
+        {
+            foreach (var product in products)
+                Console.WriteLine($"{product.Id} - {product.Name}");
+
+            Console.Write("Введите id товара, который хотите продать: ");
+            int index = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Введите количество: ");
+            int n = Convert.ToInt32(Console.ReadLine());
+            foreach (var product in products)
+            {
+                if (index == product.Id)
+                {
+                    product.Quantity -= n;
+                    Console.WriteLine($"Товар продан в количестве {n}");
+                }
+            }
+        }
+        else Console.WriteLine("Список пуст");
+    }
+
+    static void Main(string[] args)
     {
         List<Product> products = new List<Product>();
         while (true) 
         {
-            Console.WriteLine("====Меню====");
+            Console.WriteLine("==== Меню ====");
             Console.WriteLine("1. Добавить товар");
             Console.WriteLine("2. Удалить товар");
             Console.WriteLine("3. Заказать товар");
             Console.WriteLine("4. Продать товар");
             Console.WriteLine("5. Поиск товаров (по коду, названию и категории)");
             Console.WriteLine("0. Выход");
+            int choice = Convert.ToInt32(Console.ReadLine());
+            switch (choice) 
+            {
+                case 0:
+                    break;
+                case 1:
+                    Add(products);
+                    break;
+                case 2:
+                    Remove(products);
+                    break;
+                case 3:
+                    Order(products);
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+            }
         }
     }
 }
