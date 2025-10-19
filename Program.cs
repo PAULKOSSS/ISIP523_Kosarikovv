@@ -17,6 +17,46 @@ class Pr3
 
         static List<Characteristic> textHistory = new List<Characteristic>();
 
+        public void TextAdd()
+        {
+            Console.WriteLine("Введите текст (не менее 100 символов)");
+            Console.WriteLine("Вводите текст построчно. Для завершения ввода введите пустую строку:");
+
+            string input = "";
+            string line;
+            int totalLength = 0;
+
+
+            while (!string.IsNullOrWhiteSpace(line = Console.ReadLine()))
+            {
+                input += line + "\n";
+                totalLength += line.Length;
+
+
+
+            }
+
+            text = input.Trim();
+
+            if (text.Length < 100)
+            {
+                Console.WriteLine("Вы ввели некорректный текст (менее 100 символов)");
+                text = null;
+            }
+            else
+            {
+                Console.WriteLine($"Текст успешно принят! Длина: {text.Length} символов");
+            }
+        }
+
+
+
+        void WordCount()
+        {
+            char[] separators = { ' ', ',', '.', '!', '?', ';', ':', '\t', '\n', '\r', '(', ')', '[', ']', '{', '}', '"', '\'' };
+            string[] words = text.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            wordsCount = words.Length;
+        }
     }
 
     static void Main(string[] args)
