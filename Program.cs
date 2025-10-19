@@ -262,7 +262,44 @@ class Pr3
             }
             Console.WriteLine("=======================\n");
         }
+
+        public static void ShowHistory()
+        {
+            if (textHistory.Count == 0)
+            {
+                Console.WriteLine("\nИстория пуста. Сначала проанализируйте тексты.");
+                return;
+            }
+
+            Console.WriteLine($"\n=== ИСТОРИЯ АНАЛИЗА ({textHistory.Count} текстов) ===");
+
+            for (int i = 0; i < textHistory.Count; i++)
+            {
+                Console.WriteLine($"\n--- Текст #{i + 1} ---");
+                Console.WriteLine($"Предпросмотр: {textHistory[i].text}");
+                Console.WriteLine($"Слов: {textHistory[i].wordsCount}");
+                Console.WriteLine($"Предложений: {textHistory[i].sentencesCount}");
+                Console.WriteLine($"Самое короткое слово: '{textHistory[i].shortestWord}'");
+                Console.WriteLine($"Самое длинное слово: '{textHistory[i].longestWord}'");
+                Console.WriteLine($"Букв: {textHistory[i].vowel + textHistory[i].consonant} (гл: {textHistory[i].vowel}, согл: {textHistory[i].consonant})");
+            }
+            Console.WriteLine("===================================\n");
+        }
+
+
+        public void ClearAllStats()
+        {
+            text = null;
+            wordsCount = 0;
+            shortestWord = "";
+            sentencesCount = 0;
+            consonant = 0;
+            vowel = 0;
+            longestWord = "";
+            azbyka.Clear();
+        }
     }
+
 
     static void Main(string[] args)
     {
