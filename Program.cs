@@ -193,6 +193,75 @@ class Pr3
 
             textHistory.Add(historyCopy);
         }
+
+        public void CalculateAllStats()
+        {
+            if (string.IsNullOrEmpty(text))
+                return;
+
+            WordCount();
+            ShortestWordSearch();
+            LongestWordSearch();
+            SentencesCount();
+            LettersQuantity();
+            StatsLetters();
+            SaveToHistory();
+        }
+
+        public void StatsOutput()
+        {
+            Console.WriteLine("\n=== СТАТИСТИКА ТЕКСТА ===");
+            Console.WriteLine($"Текст: {(text.Length > 50 ? text.Substring(0, 50) + "..." : text)}");
+            Console.WriteLine($"Общая длина текста: {text.Length} символов");
+            Console.WriteLine($"Количество слов: {wordsCount}");
+            Console.WriteLine($"Самое короткое слово: '{shortestWord}' (длина: {shortestWord.Length})");
+            Console.WriteLine($"Самое длинное слово: '{longestWord}' (длина: {longestWord.Length})");
+            Console.WriteLine($"Количество предложений: {sentencesCount}");
+            Console.WriteLine($"Количество согласных букв: {consonant}");
+            Console.WriteLine($"Количество гласных букв: {vowel}");
+            Console.WriteLine($"Всего букв: {consonant + vowel}");
+
+
+            Console.WriteLine("\n--- Статистика букв ---");
+            if (azbyka.Count > 0)
+            {
+
+                List<KeyValuePair<char, int>> sortedList = new List<KeyValuePair<char, int>>();
+
+
+                foreach (KeyValuePair<char, int> pair in azbyka)
+                {
+                    sortedList.Add(pair);
+                }
+
+
+                for (int i = 0; i < sortedList.Count - 1; i++)
+                {
+                    for (int j = 0; j < sortedList.Count - i - 1; j++)
+                    {
+                        if (sortedList[j].Value < sortedList[j + 1].Value)
+                        {
+
+                            KeyValuePair<char, int> temp = sortedList[j];
+                            sortedList[j] = sortedList[j + 1];
+                            sortedList[j + 1] = temp;
+                        }
+                    }
+                }
+
+
+
+                foreach (KeyValuePair<char, int> pair in sortedList)
+                {
+                    Console.WriteLine($"  Буква '{pair.Key}': {pair.Value} раз");
+                }
+            }
+            else
+            {
+                Console.WriteLine("  Нет данных о буквах");
+            }
+            Console.WriteLine("=======================\n");
+        }
     }
 
     static void Main(string[] args)
