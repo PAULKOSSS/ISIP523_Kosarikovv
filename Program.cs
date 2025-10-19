@@ -159,6 +159,40 @@ class Pr3
                 }
             }
         }
+
+        void StatsLetters()
+        {
+            azbyka.Clear();
+            foreach (char ch in text)
+            {
+                if (!char.IsLetter(ch))
+                    continue;
+
+                char lowerChar = char.ToLower(ch);
+
+                if (azbyka.ContainsKey(lowerChar))
+                    azbyka[lowerChar]++;
+                else
+                    azbyka[lowerChar] = 1;
+            }
+        }
+
+
+        void SaveToHistory()
+        {
+
+            Characteristic historyCopy = new Characteristic();
+            historyCopy.text = this.text.Length > 30 ? this.text.Substring(0, 30) + "..." : this.text;
+            historyCopy.wordsCount = this.wordsCount;
+            historyCopy.shortestWord = this.shortestWord;
+            historyCopy.sentencesCount = this.sentencesCount;
+            historyCopy.consonant = this.consonant;
+            historyCopy.vowel = this.vowel;
+            historyCopy.longestWord = this.longestWord;
+            historyCopy.azbyka = new Dictionary<char, int>(this.azbyka);
+
+            textHistory.Add(historyCopy);
+        }
     }
 
     static void Main(string[] args)
