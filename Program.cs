@@ -21,10 +21,10 @@ class Pr4
         [Required]
         [Range(1, 10000)]
         public int Price;
-        public DateOnly DateOfPublish;
+        public int DateOfPublish;
         public var_genre Genre;
 
-        public Book(string name, string author, int price, DateOnly d_of_pub, var_genre genre)
+        public Book(string name, string author, int price, int d_of_pub, var_genre genre)
         {
             Id = count++;
             Name = name;
@@ -38,7 +38,7 @@ class Pr4
         {
             string name, author;
             int price;
-            DateOnly d_of_pub;
+            int d_of_pub;
             var_genre genre;
 
             Console.Write("Введите название: ");
@@ -53,7 +53,7 @@ class Pr4
             }
 
             Console.Write("Введите дату: ");
-            if (!DateOnly.TryParse(Console.ReadLine(), out d_of_pub))
+            if (!int.TryParse(Console.ReadLine(), out d_of_pub))
             {
                 Console.WriteLine("Неверный ввод");
             }
@@ -86,11 +86,7 @@ class Pr4
 
         static void DeleteBook(List<Book> Books)
         {
-            foreach (var book in Books) { 
-                Console.WriteLine($"{book.Id} - {book.Name}");
-                
-
-            }
+            PrintInfo(Books);
 
             Console.Write("Выберите книгу, которую хотите удалить, введя ее Id: ");
             if (!int.TryParse(Console.ReadLine(), out int choice_id))
@@ -105,11 +101,76 @@ class Pr4
 
         static void SearchBook(List<Book> Books)
         {
+            
+            PrintInfo(Books);
+            Console.WriteLine("1.по названию");
+            Console.WriteLine("2.по автору");
+            Console.WriteLine("3.по жанру");
+            Console.WriteLine("Выберите по какому параметру искать");
+            if (!int.TryParse(Console.ReadLine(), out int choice)) Console.WriteLine("");
+            switch (choice) {
+                case 1:
+                    {
+                        string search_name;
+                        Console.Write("");
+                        search_name = Console.ReadLine();
+                        var book = Books.FirstOrDefault(b => b.Name == search_name);
+                        PrintBookInfo(book);
+                        break;
+                    }
+                    
+                case 2:
+                    {
+                        string search_author;
+                        Console.Write("");
+                        search_author = Console.ReadLine();
+                        var book = Books.FirstOrDefault(b => b.Author == search_author);
+                        PrintBookInfo(book);
+                        break;
+                    }
+                    
+                case 3:
+                    {
+                        
+                        Console.WriteLine("1.Детектив");
+                        Console.WriteLine("2.Приключения");
+                        Console.WriteLine("3.Роман");
+                        Console.Write("Выберите жанр: ");
+                        if (!int.TryParse(Console.ReadLine(), out int search_genre))
+                        {
+                            Console.WriteLine("Неверный ввод");
+                        }
+                        
+                        var books = Books.Where(b => b.Genre == (var_genre)(search_genre - 1)).ToList();
+                        PrintInfo(books);
+                        break;
+                    }
+                    
 
+            }
         }
 
         static void SortBooks(List<Book> Books)
         {
+            PrintInfo(Books);
+            Console.WriteLine("1.по названию");
+            Console.WriteLine("2.по году");
+            Console.WriteLine("Выберите по какому параметру сортировать");
+            if (!int.TryParse(Console.ReadLine(), out int choice)) Console.WriteLine("");
+            switch (choice) {
+                case 1:
+                    {
+                        var books_byname = Books.OrderBy(b  => b.Name).ToList();
+                        PrintInfo(books_byname);
+                        break;
+                    }
+                case 2: 
+                    {
+                        var books_byyear = Books.OrderBy(b => b.DateOfPublish).ToList();
+                        PrintInfo(books_byyear);
+                        break;
+                    }
+            }
 
         }
 
@@ -121,6 +182,16 @@ class Pr4
         static void GroupByAutor(List<Book> Books)
         {
 
+        }
+
+        static void PrintInfo(List<Book> Books)
+        {
+            foreach (var book in Books) Console.WriteLine($"{book.Id} - {book.Name}");
+        }
+
+        static void PrintBookInfo(Book book)
+        {
+            Console.WriteLine($"Название - {book.Name},автор - {book.Author},цена - {book.Price},жанр - {book.Genre}, год публикации - {book.DateOfPublish}");
         }
     }
 
