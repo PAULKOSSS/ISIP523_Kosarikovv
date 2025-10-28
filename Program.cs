@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using static System.Reflection.Metadata.BlobBuilder;
 
 class Pr4 
 {
@@ -176,12 +177,14 @@ class Pr4
 
         static void MostExpAndCheapBook(List<Book> Books)
         {
-
+            Console.WriteLine($"Самая дорогая книга - {Books.Max(b => b.Price)}");
+            Console.WriteLine($"Самая дешевая книга - {Books.Min(b => b.Price)}");
         }
 
         static void GroupByAutor(List<Book> Books)
         {
-
+            var grouped_books = Books.GroupBy(b => b.Author).ToDictionary(g => g.Key, g => g.Count());
+            foreach (var book in grouped_books) Console.WriteLine(book.Key, book.Value);
         }
 
         static void PrintInfo(List<Book> Books)
