@@ -54,11 +54,42 @@
             {
 
             }
+
+
         }
+
+        class Enemy : Character
+        {
+            public int CritChance;
+
+            public Enemy(int hp, int attack, int defense) : base(hp, attack, defense) { }
+
+
+        }
+
+        class Game
+        {
+            public int turn;
+
+            public void Fight()
+            {
+
+            }
+
+            public void Event()
+            {
+
+            }
+        }
+
+        
+
+
 
         static void Main(string[] args)
         {
-
+            Dictionary<string, double> weapons = new Dictionary<string, double>() { {"Безоружный", 1 }, {"Меч", 1.3 }, {"Рапира", 1.6 }, {"Боевой топор", 1.7 }, {"Алебарда", 1.8 } };
+            Dictionary<string, double> armors = new Dictionary<string, double>() { { "Без брони", 1 }, { "Кольчуга", 1.4 }, { "Кожаная броня", 1.2 }, { "Латы", 1.6 } };
         }
     }
 }
