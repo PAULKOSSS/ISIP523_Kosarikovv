@@ -41,11 +41,11 @@
                 }
             }
 
-            public Character(int hp, int attack, int defense)
+            public Character(double hp, double attack, double defense)
             {
-                HP = Convert.ToDouble(hp);
-                Attack_value = Convert.ToDouble(attack);
-                Defense_value = Convert.ToDouble(defense);
+                HP = hp;
+                Attack_value = attack;
+                Defense_value = defense;
             }
 
             public virtual void PrintInfo()
@@ -58,18 +58,50 @@
 
         class Player : Character 
         {
-            public Weapon Player_weapon;
-            public Armor Player_armor;
+            private Weapon _player_weapon;
+            private Armor _player_armor;
+            private double _base_attack;
+            private double _base_defense;
+
             public bool isFrized = false;
             public double basehp = 100;
 
-            public Player(int hp, int attack, int defense, Weapon weapon, Armor armor) 
-                :base (hp, attack, defense)
+            
+            public Weapon Player_weapon
             {
-                Attack_value = Convert.ToDouble(attack) * weapon.AttackFactor;
-                Defense_value = Convert.ToDouble(defense) * armor.DefenseFactor;
-                Player_weapon = weapon;
-                Player_armor = armor;
+                get => _player_weapon;
+                set
+                {
+                    _player_weapon = value;
+                    RecalculateStats();
+                }
+            }
+
+            public Armor Player_armor
+            {
+                get => _player_armor;
+                set
+                {
+                    _player_armor = value;
+                    RecalculateStats();
+                }
+            }
+
+            public Player(double hp, double attack, double defense, Weapon weapon, Armor armor)
+                : base(hp, attack, defense)
+            {
+                _base_attack = attack;
+                _base_defense = defense;
+                _player_weapon = weapon;
+                _player_armor = armor;
+                RecalculateStats(); 
+            }
+            
+            
+            private void RecalculateStats()
+            {
+                Attack_value = _base_attack * _player_weapon.AttackFactor;
+                Defense_value = _base_defense * _player_armor.DefenseFactor;
             }
 
             public override void PrintInfo()
@@ -104,7 +136,7 @@
             public double Critchance = 20;
             public double Freezechance = 33;
 
-            public Enemy(int hp, int attack, int defense) : base(hp, attack, defense) 
+            public Enemy(double hp, double attack, double defense) : base(hp, attack, defense) 
             {
                 Random rand = new();
                 int randchoice = rand.Next(3);
@@ -153,7 +185,7 @@
 
         class BBG : Enemy 
         {
-            public BBG(int hp, int attack, int defense) : base(hp, attack, defense) 
+            public BBG(double hp, double attack, double defense) : base(hp, attack, defense) 
             {
                 HP = Convert.ToDouble(hp) * 2;
                 Attack_value = Convert.ToDouble(attack) * 1.5;
@@ -165,7 +197,7 @@
 
         class ArchiWizard : Enemy
         {
-            public ArchiWizard(int hp, int attack, int defense) : base(hp, attack, defense) {
+            public ArchiWizard(double hp, double attack, double defense) : base(hp, attack, defense) {
                 HP = Convert.ToDouble(hp) * 1.8;
                 Attack_value = Convert.ToDouble(attack) * 1.6;
                 Defense_value = Convert.ToDouble(defense) * 1.1;
@@ -176,7 +208,7 @@
 
         class Kovalski : Enemy
         {
-            public Kovalski(int hp, int attack, int defense) : base(hp, attack, defense) {
+            public Kovalski(double hp, double attack, double defense) : base(hp, attack, defense) {
                 HP = Convert.ToDouble(hp) * 2.5;
                 Attack_value = Convert.ToDouble(attack) * 1.3;
                 Defense_value = Convert.ToDouble(defense) * 1.4;
@@ -186,7 +218,7 @@
 
         class Pestov : Enemy
         {
-            public Pestov(int hp, int attack, int defense) : base(hp, attack, defense) {
+            public Pestov(double hp, double attack, double defense) : base(hp, attack, defense) {
                 HP = Convert.ToDouble(hp) * 1.3;
                 Attack_value = Convert.ToDouble(attack) * 1.8;
                 Defense_value = Convert.ToDouble(defense) * 0.6;
@@ -239,12 +271,12 @@
                 Console.WriteLine("Добро пожаловать в игру, сделанную на коленке в 3 часа ночи. Игра кончается на 50 ходу или после смерти игрока");
                 Weapon weapon0 = new("кулаки", 1);
                 Armor armor0 = new("пайта", 1);
-                Player Mainplayer = new(100, 20, 15, weapon0, armor0);
+                Player Mainplayer = new(100.0, 20.0, 15.0, weapon0, armor0);
 
                 while (Mainplayer.IsAlive && turn <= 50)
                 {
-                    Console.WriteLine($"Ход - {turn}");
-                    int randchoice = random.Next(1, 2);
+                    Console.WriteLine($"### Ход - {turn} ###");
+                    int randchoice = random.Next(1, 3);
                     if (turn % 10 != 0)
                     {
                         switch (randchoice)
@@ -261,26 +293,31 @@
                     {
                         BossFight();
                     }
+                    turn++;
                 }
             }
 
             public void Fight(Player player, Random random)
             {
-                Enemy enemy = new(50, 10, 5);
-                Console.WriteLine($"Перед вами враг {enemy.EnemyName}");
+                double hp = Convert.ToDouble(random.Next(50, 100));
+                double attack = Convert.ToDouble(random.Next(5, 20));
+                double defense = Convert.ToDouble(random.Next(5, 10));
+                Enemy enemy = new(hp, attack, defense);
+                Console.WriteLine($"Перед вами {enemy.EnemyName}");
                 while (enemy.IsAlive && player.IsAlive)
                 {
+                    Console.WriteLine($"ХП врага - {enemy.HP}, ваше ХП - {player.HP}");
                     Console.Write("Можете атаковать(1) или защищаться(2). Что выберете? ");
                     int choice = Convert.ToInt32(Console.ReadLine());
                     switch (choice)
                     {
                         case 1:
-                            Console.WriteLine($"ХП врага - {enemy.HP}, ваше ХП - {player.HP}");
+                            
                             enemy.HP -= player.Attack();
                             break;
                         case 2:
                             enemy.Enemy_Attack(random, player);
-                            Console.WriteLine($"ХП врага - {enemy.HP}, ваше ХП - {player.HP}");
+                            //Console.WriteLine($"ХП врага - {enemy.HP}, ваше ХП - {player.HP}");
                             break;
                     }
                     
@@ -309,7 +346,7 @@
             public void Event(Random random, Player Mainplayer, List<Weapon> weapons, List<Armor> armors)
             {
                 Console.Write("Сундук, а в нем...");
-                int choice = random.Next(1, 3);
+                int choice = random.Next(1, 4);
                 switch (choice) 
                 {
                     case 1:
@@ -319,7 +356,7 @@
                     case 2:
                         {
                             int weaponchoice = random.Next(5);
-                            Console.Write($"Оружие: {weapons[weaponchoice].WeaponName} - {weapons[weaponchoice].AttackFactor}");
+                            Console.WriteLine($"Оружие: {weapons[weaponchoice].WeaponName} - {weapons[weaponchoice].AttackFactor}");
                             Console.WriteLine($"Ваше текущее: {Mainplayer.Player_weapon.WeaponName} - {Mainplayer.Player_weapon.AttackFactor}");
                             Console.WriteLine("1.Поднять");
                             Console.WriteLine("2.Оставить");
@@ -332,7 +369,7 @@
                     case 3:
                         {
                             int armorchoice = random.Next(5);
-                            Console.Write($"Броня: {armors[armorchoice].ArmorName} - {armors[armorchoice].DefenseFactor}");
+                            Console.WriteLine($"Броня: {armors[armorchoice].ArmorName} - {armors[armorchoice].DefenseFactor}");
                             Console.WriteLine($"Ваше текущее: {Mainplayer.Player_armor.ArmorName} - {Mainplayer.Player_armor.DefenseFactor}");
                             Console.WriteLine("1.Поднять");
                             Console.WriteLine("2.Оставить");
