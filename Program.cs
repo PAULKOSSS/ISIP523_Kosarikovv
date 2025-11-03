@@ -2,20 +2,6 @@
 {
     class Programm
     {
-        public class Character
-        {
-            public int HP;
-            public double Attack_value;
-            public double Defense_value;
-
-            public Character(int hp, int attack, int defense)
-            {
-                HP = hp;
-                Attack_value = Convert.ToDouble(attack);
-                Defense_value = Convert.ToDouble(defense);
-            }
-        }
-
         class Weapon
         {
             public string WeaponName;
@@ -27,6 +13,22 @@
             public string ArmorName;
             public double DefenseFactor;
         }
+
+        public class Character
+        {
+            public double HP;
+            public double Attack_value;
+            public double Defense_value;
+
+            public Character(int hp, int attack, int defense)
+            {
+                HP = Convert.ToDouble(hp);
+                Attack_value = Convert.ToDouble(attack);
+                Defense_value = Convert.ToDouble(defense);
+            }
+        }
+
+        
 
         class Player : Character 
         {
@@ -48,33 +50,61 @@
                 return Attack_value;
             }
 
-            public void Defense()
+            public bool Defense(Random random)
             {
-                bool 
+                if (random.Next(100) <= 40) return true;
+                else return false;
             }
 
-            public void PickUpItem()
-            {
-
-            }
+            
 
 
         }
 
         class Enemy : Character
         {
-            
+            public string EnemyName;
 
             public Enemy(int hp, int attack, int defense) : base(hp, attack, defense) { }
 
+            
+        }
 
+        class BBG : Enemy 
+        {
+            public BBG(int hp, int attack, int defense) : base(hp, attack, defense) { }
+        }
+
+        class ArchiWizard : Enemy
+        {
+            public ArchiWizard(int hp, int attack, int defense) : base(hp, attack, defense) { }
+        }
+
+        class Kovalski : Enemy
+        {
+            public Kovalski(int hp, int attack, int defense) : base(hp, attack, defense) { }
+        }
+
+        class Pestov : Enemy
+        {
+            public Pestov(int hp, int attack, int defense) : base(hp, attack, defense) { }
         }
 
         class Game
         {
-            public int turn = 0;
+            public int turn = 1;
+
+            public void Start() 
+            {
+                
+            }
 
             public void Fight()
+            {
+
+            }
+
+            public void BossFight()
             {
 
             }
@@ -92,8 +122,7 @@
         static void Main(string[] args)
         {
             Random random = new Random();
-            Dictionary<string, double> weapons = new Dictionary<string, double>() { {"Безоружный", 1 }, {"Меч", 1.3 }, {"Рапира", 1.6 }, {"Боевой топор", 1.7 }, {"Алебарда", 1.8 } };
-            Dictionary<string, double> armors = new Dictionary<string, double>() { { "Без брони", 1 }, { "Кольчуга", 1.4 }, { "Кожаная броня", 1.2 }, { "Латы", 1.6 } };
+            
         }
     }
 }
