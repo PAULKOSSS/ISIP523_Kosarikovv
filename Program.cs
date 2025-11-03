@@ -153,80 +153,130 @@
                 return (random.Next(1, 100) <= Freezechance);
             }
 
-            public virtual void Enemy_Attack(Random random, Player player)
+            public virtual void Enemy_Attack(Random random, Player player, bool statflag)
             {
-                bool block = player.Defense(random);
-                bool crit = CheckCritchance(random);
-                bool freeze = CheckFreezechance(random);
-
-                switch ((int)EnemyName) 
+                if (IsAlive)
                 {
-                    case 0:
-                        if (!block && crit)
-                        {
-                            player.HP -= (((Attack_value * 2) - player.Defense_value) * (random.Next(70, 100) / 100));
-                        }
-                        else if (!block && !crit)
-                        {
-                            player.HP -= ((Attack_value - player.Defense_value) * (random.Next(70, 100) / 100));
-                        }
-                        else if (block) Console.WriteLine("Вы заблокали удар противника");
-                        break;
-                    case 1:
-                        player.HP -= (Attack_value * (random.Next(70, 100) / 100));
-                        break;
-                    case 2:
-                        if (freeze) player.isFrized = true;
-                        break;
+                    double blockfactor = 1 - random.Next(70, 101) / 100.0;
+                    bool crit = CheckCritchance(random);
+                    bool freeze = CheckFreezechance(random);
 
+                    if (!statflag)
+                    {
+                        switch ((int)EnemyName)
+                        {
+                            case 0:
+                                {
+                                    if (crit)
+                                    {
+                                        double damage_in_at = (Attack_value * 2) - player.Defense_value;
+                                        player.HP -= damage_in_at;
+                                    }
+                                    else
+                                    {
+                                        double damage_in_at2 = Attack_value - player.Defense_value;
+                                        player.HP -= damage_in_at2;
+                                    }
+                                    break;
+                                }
+                            case 1:
+                                {
+                                    double damage = Attack_value;
+                                    player.HP -= damage;
+                                    break;
+                                }
+                            case 2:
+                                if (freeze) player.isFrized = true;
+                                double damage_in_def = Attack_value - player.Defense_value;
+                                double blockdamage = damage_in_def * blockfactor;
+                                player.HP -= damage_in_def - blockdamage;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        bool block = player.Defense(random);
+                        
+                        switch ((int)EnemyName)
+                        {
+                            case 0:
+                                if (!block && crit)
+                                {
+                                    double damage_in_def = (Attack_value * 2) - player.Defense_value;
+                                    double blockdamage = damage_in_def * blockfactor;
+                                    player.HP -= damage_in_def - blockdamage;
+                                }
+                                else if (!block && !crit)
+                                {
+                                    double damage_in_def = Attack_value - player.Defense_value;
+                                    double blockdamage = damage_in_def * blockfactor;
+                                    player.HP -= damage_in_def - blockdamage;
+                                }
+                                else if (block) Console.WriteLine("Вы заблокали удар противника");
+                                break;
+                            case 1:
+                                player.HP -= Attack_value;
+                                break;
+                            case 2:
+                                {
+                                    if (freeze) player.isFrized = true;
+                                    double damage_in_def = Attack_value - player.Defense_value;
+                                    double blockdamage = damage_in_def * blockfactor;
+                                    player.HP -= damage_in_def - blockdamage;
+                                    break;
+                                }  
+                        }
+                    }
                 }
+                else return;
+                
             }
         }
 
         class BBG : Enemy 
         {
-            public BBG(double hp, double attack, double defense) : base(hp, attack, defense) 
+            public BBG(double hp, double attack, double defense) : base(hp * 2, attack * 1.5, defense * 1.5) 
             {
-                HP = Convert.ToDouble(hp) * 2;
-                Attack_value = Convert.ToDouble(attack) * 1.5;
-                Defense_value = Convert.ToDouble(defense) * 1.2;
+                HP = hp;
+                Attack_value = attack;
+                Defense_value = defense;
                 EnemyName = EnemeType.Гоблин;
-                Critchance *= 1.1;
+                Critchance = 30;
             }
         }
 
         class ArchiWizard : Enemy
         {
-            public ArchiWizard(double hp, double attack, double defense) : base(hp, attack, defense) {
-                HP = Convert.ToDouble(hp) * 1.8;
-                Attack_value = Convert.ToDouble(attack) * 1.6;
-                Defense_value = Convert.ToDouble(defense) * 1.1;
+            public ArchiWizard(double hp, double attack, double defense) : base(hp * 1.8, attack * 1.6, defense * 1.1) {
+                HP = hp;
+                Attack_value = attack;
+                Defense_value = defense;
                 EnemyName = EnemeType.Маг;
-                Freezechance *= 1.1;
+                Freezechance = 43;
             }
         }
 
         class Kovalski : Enemy
         {
-            public Kovalski(double hp, double attack, double defense) : base(hp, attack, defense) {
-                HP = Convert.ToDouble(hp) * 2.5;
-                Attack_value = Convert.ToDouble(attack) * 1.3;
-                Defense_value = Convert.ToDouble(defense) * 1.4;
+            public Kovalski(double hp, double attack, double defense) : base(hp * 2.5, attack * 1.3, defense * 1.4) {
+                HP = hp;
+                Attack_value = attack;
+                Defense_value = defense;
                 EnemyName = EnemeType.Скелет;
             }
         }
 
         class Pestov : Enemy
         {
-            public Pestov(double hp, double attack, double defense) : base(hp, attack, defense) {
-                HP = Convert.ToDouble(hp) * 1.3;
-                Attack_value = Convert.ToDouble(attack) * 1.8;
-                Defense_value = Convert.ToDouble(defense) * 0.6;
+            public Pestov(double hp, double attack, double defense) : base(hp * 1.3, attack * 1.8, defense * 0.6) {
+                HP = hp;
+                Attack_value = attack;
+                Defense_value = defense;
                 EnemyName = EnemeType.Скелет;
-                Freezechance *= 1.15;
+                Freezechance = 48;
             }
 
-            public override void Enemy_Attack(Random random, Player player)
+            public override void Enemy_Attack(Random random, Player player, bool statflag)
             {
                 bool freeze = CheckFreezechance(random);
                 player.HP -= Attack_value;
@@ -271,7 +321,7 @@
                 Console.WriteLine("Добро пожаловать в игру, сделанную на коленке в 3 часа ночи. Игра кончается на 50 ходу или после смерти игрока");
                 Weapon weapon0 = new("кулаки", 1);
                 Armor armor0 = new("пайта", 1);
-                Player Mainplayer = new(100.0, 20.0, 15.0, weapon0, armor0);
+                Player Mainplayer = new(100.0, 20.0, 10.0, weapon0, armor0);
 
                 while (Mainplayer.IsAlive && turn <= 50)
                 {
@@ -294,47 +344,61 @@
                         BossFight();
                     }
                     turn++;
+                    Console.WriteLine("");
                 }
             }
 
             public void Fight(Player player, Random random)
             {
-                double hp = Convert.ToDouble(random.Next(50, 100));
-                double attack = Convert.ToDouble(random.Next(5, 20));
-                double defense = Convert.ToDouble(random.Next(5, 10));
+                double hp = Convert.ToDouble(random.Next(50, 71));
+                double attack = Convert.ToDouble(random.Next(12, 21));
+                double defense = Convert.ToDouble(random.Next(5, 11));
                 Enemy enemy = new(hp, attack, defense);
                 Console.WriteLine($"Перед вами {enemy.EnemyName}");
-                while (enemy.IsAlive && player.IsAlive)
-                {
-                    Console.WriteLine($"ХП врага - {enemy.HP}, ваше ХП - {player.HP}");
-                    Console.Write("Можете атаковать(1) или защищаться(2). Что выберете? ");
-                    int choice = Convert.ToInt32(Console.ReadLine());
-                    switch (choice)
+                    while (enemy.IsAlive && player.IsAlive)
                     {
-                        case 1:
-                            
-                            enemy.HP -= player.Attack();
-                            break;
-                        case 2:
-                            enemy.Enemy_Attack(random, player);
-                            //Console.WriteLine($"ХП врага - {enemy.HP}, ваше ХП - {player.HP}");
-                            break;
+                        Console.WriteLine($"ХП врага - {enemy.HP}, ваше ХП - {player.HP}");
+                        if (!player.isFrized)
+                        {
+                            Console.Write("Можете атаковать(1) или защищаться(2). Что выберете? ");
+                                int choice = Convert.ToInt32(Console.ReadLine());
+                                switch (choice)
+                                {
+                                    case 1:
+
+                                        enemy.HP -= player.Attack();
+                                        enemy.Enemy_Attack(random, player, false);
+                                        break;
+                                    case 2:
+                                        enemy.Enemy_Attack(random, player, true);
+                                        //Console.WriteLine($"ХП врага - {enemy.HP}, ваше ХП - {player.HP}");
+                                        break;
+                                }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Вас заморозили, скип");
+                            enemy.Enemy_Attack(random, player, true);
+                            player.isFrized = false;
+                            continue;
+                        }
                     }
-                    
-                }
-                if (!enemy.IsAlive)
-                {
-                    Console.WriteLine($"Победа, {enemy.EnemyName} сгинул");
-                    player.PrintInfo();
-                    return;
-                }
-                if (!player.IsAlive)
-                {
-                    Console.WriteLine($"Поражение, ты слаб");
-                    EndGame(player);
-                    //player.PrintInfo();
-                    return;
-                }
+                    if (!enemy.IsAlive)
+                    {
+                        Console.WriteLine($"Победа, {enemy.EnemyName} сгинул");
+                        player.PrintInfo();
+                        return;
+                    }
+                    if (!player.IsAlive)
+                    {
+                        Console.WriteLine($"Поражение, слабость");
+                        EndGame(player);
+                        //player.PrintInfo();
+                        return;
+                    }
+                
+                
+                
 
             }
 
