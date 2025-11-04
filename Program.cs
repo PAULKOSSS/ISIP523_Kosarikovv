@@ -28,6 +28,35 @@
             }
         }
 
+        class Student : Person 
+        {
+            public Student(string fio, DateOnly dofb, string number, string email) : base(fio, dofb, number, email)
+            {
+            }
+        }
+
+        class Professor : Person
+        {
+            public Professor(string fio, DateOnly dofb, string number, string email) : base(fio, dofb, number, email)
+            {
+            }
+        }
+
+        class Course
+        {
+
+        }
+
+        static void PrintAllInfo()
+        {
+
+        }
+
+        static void Start()
+        {
+
+        }
+
         static void Main(string[] args)
         {
 
