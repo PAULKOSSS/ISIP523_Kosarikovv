@@ -184,19 +184,33 @@ namespace Pr5
 
             public void CreateNewCourse(List<Course> courses)
             {
-                
+                string nameOfCourse;
+                while (true)
+                {
+                    Console.Write("Введите название курса: ");
+                    nameOfCourse = Console.ReadLine()?.Trim();
+
+                    if (!string.IsNullOrWhiteSpace(nameOfCourse)) break;
+                    Console.WriteLine("Ошибка! Название курса не может быть пустым. Попробуйте снова.");
+                }
+
+                Course course = new(nameOfCourse);
+                Console.WriteLine($"Курс с названием {course.NameOfCourse} успешно создан; чтобы добавить преподавателя или студентов на курс выберите соответсвующие пункты в меню.");
+                Console.WriteLine("");
             }
 
 
 
             public void ShowAllInfo()
             {
-
+                Console.WriteLine($"Курс - {NameOfCourse}, ведет его {ProfessorOfCourse.FIO}");
+                Console.WriteLine("");
             }
 
-            public void ShowAllStudentsOnCourse(List<Student> StudentsOnCourse)
+            public void ShowAllStudentsOnCourse()
             {
-
+                Console.WriteLine("Студенты записанные на этот курс:");
+                foreach (var student in StudentsOnCourse) Console.WriteLine($"{student.FIO}");
             }
         }
 
