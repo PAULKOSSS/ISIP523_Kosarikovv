@@ -177,6 +177,8 @@ namespace Pr5
                 var (fio, dofb, number, email) = Create();
                 Student student = new(fio, dofb, number, email);
                 students.Add(student);
+                Console.WriteLine($"Студент {student.FIO} успешно создан");
+                Console.WriteLine("");
             }
 
             public void EnrollmentOnCourse(List<Course> courses, List<Student> students)
@@ -194,6 +196,7 @@ namespace Pr5
             {
                 Console.WriteLine("Все курсы, на которые записан студент:");
                 foreach (var course in courses_of_person) course.ShowAllInfo();
+                Console.WriteLine("");
             }
         }
 
@@ -234,6 +237,14 @@ namespace Pr5
 
             public void EnrollmentOnCourse(List<Course> courses, List<Professor> professors)
             {
+                int count = 0;
+                foreach (var course in courses) if (course.ProfessorOfCourse != null) count++;
+                if (count == courses.Count)
+                {
+                    Console.WriteLine("Все занято");
+                    return;
+                }
+
                 var choicedprofessor = ChoiceProfessor(professors);
                 while (true)
                 {
@@ -243,8 +254,7 @@ namespace Pr5
                         choicedcourse.ProfessorOfCourse = choicedprofessor;
                         Console.WriteLine($"Профессор {choicedprofessor.FIO} успешно назначен на курс {choicedcourse.NameOfCourse}");
                     }
-                    ;
-                    Console.WriteLine("Профессор уже есть");
+                    else Console.WriteLine("Профессор уже есть");
                 }
                 
 
@@ -258,7 +268,7 @@ namespace Pr5
         {
             public string NameOfCourse { get; private set; }
             public Professor ProfessorOfCourse { get; set; }
-            public List<Student> StudentsOnCourse { get; set; }
+            public List<Student> StudentsOnCourse = new List<Student>();
 
             public Course(string nameOfCourse)
             {
@@ -295,7 +305,8 @@ namespace Pr5
             public void ShowAllStudentsOnCourse()
             {
                 Console.WriteLine("Студенты записанные на этот курс:");
-                foreach (var student in StudentsOnCourse) Console.WriteLine($"{student.FIO}");
+                if (StudentsOnCourse.Any()) foreach (var student in StudentsOnCourse) Console.WriteLine($"{student.FIO}");
+                else Console.WriteLine("Никто не записался");
                 Console.WriteLine("");
             }
         }
