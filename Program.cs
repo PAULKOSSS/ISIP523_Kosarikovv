@@ -5,7 +5,48 @@ namespace Pr5
 {
     class Programm
     {
-        
+        static void AddTestData(List<Student> students, List<Professor> professors, List<Course> courses)
+        {
+            // Добавляем 5 тестовых студентов
+            students.Add(new Student("Иванов Иван Иванович", new DateOnly(2000, 5, 15), "+79161234567", "ivanov@mail.ru"));
+            students.Add(new Student("Петрова Анна Сергеевна", new DateOnly(2001, 3, 22), "+79162345678", "petrova@mail.ru"));
+            students.Add(new Student("Сидоров Алексей Владимирович", new DateOnly(1999, 11, 8), "+79163456789", "sidorov@mail.ru"));
+            students.Add(new Student("Козлова Мария Дмитриевна", new DateOnly(2002, 7, 30), "+79164567890", "kozlova@mail.ru"));
+            students.Add(new Student("Николаев Денис Петрович", new DateOnly(2000, 1, 14), "+79165678901", "nikolaev@mail.ru"));
+
+            // Добавляем 5 тестовых профессоров
+            professors.Add(new Professor("Смирнов Александр Васильевич", new DateOnly(1975, 8, 12), "+79166789012", "smirnov@university.ru"));
+            professors.Add(new Professor("Орлова Елена Михайловна", new DateOnly(1980, 4, 25), "+79167890123", "orlova@university.ru"));
+            professors.Add(new Professor("Федоров Павел Игоревич", new DateOnly(1968, 12, 3), "+79168901234", "fedorov@university.ru"));
+            professors.Add(new Professor("Волкова Татьяна Николаевна", new DateOnly(1972, 6, 18), "+79169012345", "volkova@university.ru"));
+            professors.Add(new Professor("Жуков Виктор Степанович", new DateOnly(1985, 9, 7), "+79160123456", "zhukov@university.ru"));
+
+            // Добавляем 5 тестовых курсов
+            courses.Add(new Course("Математический анализ"));
+            courses.Add(new Course("Объектно-ориентированное программирование"));
+            courses.Add(new Course("Базы данных"));
+            courses.Add(new Course("Алгоритмы и структуры данных"));
+            courses.Add(new Course("Веб-разработка"));
+
+            // Назначаем профессоров на курсы (если нужно)
+            if (professors.Count >= 5 && courses.Count >= 5)
+            {
+                courses[0].ProfessorOfCourse = professors[0];
+                courses[1].ProfessorOfCourse = professors[1];
+                courses[2].ProfessorOfCourse = professors[2];
+                courses[3].ProfessorOfCourse = professors[3];
+                courses[4].ProfessorOfCourse = professors[4];
+
+                // Добавляем курсы в списки профессоров
+                professors[0].courses_of_person.Add(courses[0]);
+                professors[1].courses_of_person.Add(courses[1]);
+                professors[2].courses_of_person.Add(courses[2]);
+                professors[3].courses_of_person.Add(courses[3]);
+                professors[4].courses_of_person.Add(courses[4]);
+            }
+
+            Console.WriteLine("Добавлено 5 тестовых студентов, 5 профессоров и 5 курсов!");
+        }
 
         class Person
         {
@@ -13,6 +54,8 @@ namespace Pr5
             public DateOnly DateOfBirth { get; private set; }
             public string PhoneNumber { get; private set; }
             public string Email { get; private set; }
+
+            public List<Course> courses_of_person = new();
 
             public Person(string fio, DateOnly dofb, string number, string email) 
             {
@@ -99,7 +142,7 @@ namespace Pr5
 
         class Student : Person 
         {
-            public List<Course> courses_of_student;
+            //public List<Course> courses_of_student;
 
             public Student(string fio, DateOnly dofb, string number, string email) : base(fio, dofb, number, email) { }
 
@@ -138,44 +181,11 @@ namespace Pr5
 
             public void EnrollmentOnCourse(List<Course> courses, List<Student> students)
             {
-                //Console.WriteLine("Все студенты:");
-                //foreach (var student in students) student.PrintInfo();
-
-                //string choicedstudentname;
-                //while (true)
-                //{
-                //    Console.Write("Введите ФИО студента, которого надо записать: ");
-                //    choicedstudentname = Console.ReadLine()?.Trim();
-
-                //    if (!string.IsNullOrWhiteSpace(choicedstudentname))
-                //    {
-                //        break;
-                //    }
-                //    Console.WriteLine("Ошибка! Имя не может быть пустым. Попробуйте снова.");
-                //}
-
                 var choicedstudent = ChoiceStudent(students);
                 
-
-                //Console.WriteLine("Все курсы:");
-                //foreach (var course in courses) course.ShowAllInfo();
-
-                //string choicedcoursename;
-                //while (true)
-                //{
-                //    Console.Write("Введите название курса, на который вас записать: ");
-                //    choicedcoursename = Console.ReadLine()?.Trim();
-
-                //    if (!string.IsNullOrWhiteSpace(choicedcoursename))
-                //    {
-                //        break;
-                //    }
-                //    Console.WriteLine("Ошибка! Название курса не может быть пустым. Попробуйте снова.");
-                //}
-
                 var choicedcourse = ChoiceCourse(courses);
 
-                choicedstudent.courses_of_student.Add(choicedcourse);
+                choicedstudent.courses_of_person.Add(choicedcourse);
                 choicedcourse.StudentsOnCourse.Add(choicedstudent);
                 Console.WriteLine($"Студент {choicedstudent.FIO} успешно добавлен на курс {choicedcourse.NameOfCourse}");
             }
@@ -183,7 +193,7 @@ namespace Pr5
             public void ShowAllCoursesOfStudent()
             {
                 Console.WriteLine("Все курсы, на которые записан студент:");
-                foreach (var course in courses_of_student) course.ShowAllInfo();
+                foreach (var course in courses_of_person) course.ShowAllInfo();
             }
         }
 
@@ -224,7 +234,23 @@ namespace Pr5
 
             public void EnrollmentOnCourse(List<Course> courses, List<Professor> professors)
             {
+                var choicedprofessor = ChoiceProfessor(professors);
+                while (true)
+                {
+                    var choicedcourse = ChoiceCourse(courses);
+                    if (choicedcourse.ProfessorOfCourse == null) {
+                        choicedprofessor.courses_of_person.Add(choicedcourse);
+                        choicedcourse.ProfessorOfCourse = choicedprofessor;
+                        Console.WriteLine($"Профессор {choicedprofessor.FIO} успешно назначен на курс {choicedcourse.NameOfCourse}");
+                    }
+                    ;
+                    Console.WriteLine("Профессор уже есть");
+                }
+                
 
+                //choicedstudent.courses_of_student.Add(choicedcourse);
+                //choicedcourse.StudentsOnCourse.Add(choicedstudent);
+                //Console.WriteLine($"Студент {choicedstudent.FIO} успешно добавлен на курс {choicedcourse.NameOfCourse}");
             }
         }
 
@@ -299,14 +325,17 @@ namespace Pr5
         static void PrintAllInfo(List<Student> students, List<Professor> professors, List<Course> courses)
         {
             Console.WriteLine("Полная информация о системе");
+
             Console.WriteLine("Студенты:");
             foreach (var student in students)
             {
                 student.PrintInfo();
                 student.ShowAllCoursesOfStudent();
             }
+
             Console.WriteLine("Профессора:");
             foreach (var prof in professors) prof.PrintInfo();
+
             Console.WriteLine("Курсы");
             foreach (var course in courses)
             {
@@ -385,6 +414,7 @@ namespace Pr5
                         foreach (var prof in professors) prof.PrintInfo();
                         break;
                     case 7:
+                        professor.EnrollmentOnCourse(courses, professors);
                         break;
                     case 8:
                         course.CreateNewCourse(courses);
@@ -413,6 +443,9 @@ namespace Pr5
             List<Student> students = new();
             List<Professor> professors = new();
             List<Course> courses = new();
+
+            AddTestData(students, professors, courses);
+
             Start(students, professors, courses);
         }
     }
