@@ -1,4 +1,7 @@
-﻿namespace Pr6
+﻿using System;
+using System.Numerics;
+
+namespace Pr6
 {
     class Programm
     {
@@ -237,9 +240,9 @@
         {
             public BBG(double hp, double attack, double defense) : base(hp * 2, attack * 1.5, defense * 1.5) 
             {
-                HP = hp;
-                Attack_value = attack;
-                Defense_value = defense;
+                //HP = hp;
+                //Attack_value = attack;
+                //Defense_value = defense;
                 EnemyName = EnemeType.Гоблин;
                 Critchance = 30;
             }
@@ -248,9 +251,9 @@
         class ArchiWizard : Enemy
         {
             public ArchiWizard(double hp, double attack, double defense) : base(hp * 1.8, attack * 1.6, defense * 1.1) {
-                HP = hp;
-                Attack_value = attack;
-                Defense_value = defense;
+                //HP = hp;
+                //Attack_value = attack;
+                //Defense_value = defense;
                 EnemyName = EnemeType.Маг;
                 Freezechance = 43;
             }
@@ -259,9 +262,9 @@
         class Kovalski : Enemy
         {
             public Kovalski(double hp, double attack, double defense) : base(hp * 2.5, attack * 1.3, defense * 1.4) {
-                HP = hp;
-                Attack_value = attack;
-                Defense_value = defense;
+                //HP = hp;
+                //Attack_value = attack;
+                //Defense_value = defense;
                 EnemyName = EnemeType.Скелет;
             }
         }
@@ -269,9 +272,9 @@
         class Pestov : Enemy
         {
             public Pestov(double hp, double attack, double defense) : base(hp * 1.3, attack * 1.8, defense * 0.6) {
-                HP = hp;
-                Attack_value = attack;
-                Defense_value = defense;
+                //HP = hp;
+                //Attack_value = attack;
+                //Defense_value = defense;
                 EnemyName = EnemeType.Скелет;
                 Freezechance = 48;
             }
@@ -341,7 +344,7 @@
                     }
                     else
                     {
-                        BossFight();
+                        BossFight(random, Mainplayer);
                     }
                     turn++;
                     Console.WriteLine("");
@@ -402,9 +405,80 @@
 
             }
 
-            public void BossFight()
-            {
+            
 
+            public void BossFight(Random random, Player player)
+            {
+                Enemy boss;
+                int bossType = random.Next(0, 4);
+
+                double baseHP = random.Next(70, 101);
+                double baseAttack = random.Next(15, 26);
+                double baseDefense = random.Next(10, 16);
+
+                switch (bossType)
+                {
+                    case 0:
+                        boss = new BBG(baseHP, baseAttack, baseDefense);
+                        Console.WriteLine("ВВГ (Усиленный Гоблин)");
+                        break;
+                    case 1:
+                        boss = new Kovalski(baseHP, baseAttack, baseDefense);
+                        Console.WriteLine("Ковальский (Усиленный Скелет)");
+                        break;
+                    case 2:
+                        boss = new ArchiWizard(baseHP, baseAttack, baseDefense);
+                        Console.WriteLine("Архимаг C++ (Усиленный Маг)");
+                        break;
+                    case 3:
+                        boss = new Pestov(baseHP, baseAttack, baseDefense);
+                        Console.WriteLine("Пестов С-- (Особый Скелет)");
+                        break;
+                    default:
+                        boss = new BBG(baseHP, baseAttack, baseDefense);
+                        break;
+                }
+                while (boss.IsAlive && player.IsAlive)
+                {
+                    Console.WriteLine($"ХП босса - {boss.HP}, ваше ХП - {player.HP}");
+                    if (!player.isFrized)
+                    {
+                        Console.Write("Можете атаковать(1) или защищаться(2). Что выберете? ");
+                        int choice = Convert.ToInt32(Console.ReadLine());
+                        switch (choice)
+                        {
+                            case 1:
+
+                                boss.HP -= player.Attack();
+                                boss.Enemy_Attack(random, player, false);
+                                break;
+                            case 2:
+                                boss.Enemy_Attack(random, player, true);
+                                //Console.WriteLine($"ХП врага - {enemy.HP}, ваше ХП - {player.HP}");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Вас заморозили, скип");
+                        boss.Enemy_Attack(random, player, true);
+                        player.isFrized = false;
+                        continue;
+                    }
+                }
+                if (!boss.IsAlive)
+                {
+                    Console.WriteLine($"Победа,босс {boss.EnemyName} сгинул");
+                    player.PrintInfo();
+                    return;
+                }
+                if (!player.IsAlive)
+                {
+                    Console.WriteLine($"Поражение, слабость");
+                    EndGame(player);
+                    //player.PrintInfo();
+                    return;
+                }
             }
 
             public void Event(Random random, Player Mainplayer, List<Weapon> weapons, List<Armor> armors)
