@@ -67,7 +67,7 @@ namespace Pr6
             private double _base_defense;
 
             public bool isFrized = false;
-            public double basehp = 100;
+            public double basehp = 150;
 
             
             public Weapon Player_weapon
@@ -168,71 +168,82 @@ namespace Pr6
                     {
                         switch ((int)EnemyName)
                         {
+                            // гоблин
                             case 0:
                                 {
                                     if (crit)
                                     {
+                                        Console.WriteLine("Крит прокнул");
                                         double damage_in_at = (Attack_value * 2) - player.Defense_value;
-                                        player.HP -= damage_in_at;
+                                        player.HP -= (damage_in_at >= 0) ? damage_in_at : 0;
+
                                     }
                                     else
                                     {
-                                        double damage_in_at2 = Attack_value - player.Defense_value;
-                                        player.HP -= damage_in_at2;
+                                        double damage_in_at = Attack_value - player.Defense_value;
+                                        player.HP -= (damage_in_at >= 0) ? damage_in_at : 0;
                                     }
                                     break;
                                 }
+                            // скелет
                             case 1:
                                 {
                                     double damage = Attack_value;
-                                    player.HP -= damage;
+                                    player.HP -= (damage >= 0) ? damage : 0;
                                     break;
                                 }
+                            // маг
                             case 2:
                                 if (freeze) player.isFrized = true;
                                 double damage_in_def = Attack_value - player.Defense_value;
                                 double blockdamage = damage_in_def * blockfactor;
-                                player.HP -= damage_in_def - blockdamage;
+                                double resdamage = damage_in_def - blockdamage;
+                                player.HP -= (resdamage >= 0) ? resdamage : 0;
                                 break;
                         }
                     }
                     else
                     {
                         bool block = player.Defense(random);
-                        
+
                         switch ((int)EnemyName)
                         {
+                            // гоблин
                             case 0:
                                 if (!block && crit)
                                 {
                                     double damage_in_def = (Attack_value * 2) - player.Defense_value;
                                     double blockdamage = damage_in_def * blockfactor;
-                                    player.HP -= damage_in_def - blockdamage;
+                                    double resdamage = damage_in_def - blockdamage;
+                                    player.HP -= (resdamage >= 0) ? resdamage : 0;
                                 }
                                 else if (!block && !crit)
                                 {
                                     double damage_in_def = Attack_value - player.Defense_value;
                                     double blockdamage = damage_in_def * blockfactor;
-                                    player.HP -= damage_in_def - blockdamage;
+                                    double resdamage = damage_in_def - blockdamage;
+                                    player.HP -= (resdamage >= 0) ? resdamage : 0;
                                 }
                                 else if (block) Console.WriteLine("Вы заблокали удар противника");
                                 break;
+                            // скелет
                             case 1:
                                 player.HP -= Attack_value;
                                 break;
+                            // маг
                             case 2:
                                 {
                                     if (freeze) player.isFrized = true;
                                     double damage_in_def = Attack_value - player.Defense_value;
                                     double blockdamage = damage_in_def * blockfactor;
-                                    player.HP -= damage_in_def - blockdamage;
+                                    double resdamage = damage_in_def - blockdamage;
+                                    player.HP -= (resdamage >= 0) ? resdamage : 0;
                                     break;
-                                }  
+                                }
                         }
                     }
                 }
                 else return;
-                
             }
         }
 
@@ -324,7 +335,7 @@ namespace Pr6
                 Console.WriteLine("Добро пожаловать в игру, сделанную на коленке в 3 часа ночи. Игра кончается на 50 ходу или после смерти игрока");
                 Weapon weapon0 = new("кулаки", 1);
                 Armor armor0 = new("пайта", 1);
-                Player Mainplayer = new(100.0, 20.0, 10.0, weapon0, armor0);
+                Player Mainplayer = new(150.0, 20.0, 10.0, weapon0, armor0);
 
                 while (Mainplayer.IsAlive && turn <= 50)
                 {
@@ -354,8 +365,8 @@ namespace Pr6
             public void Fight(Player player, Random random)
             {
                 double hp = Convert.ToDouble(random.Next(50, 71));
-                double attack = Convert.ToDouble(random.Next(12, 21));
-                double defense = Convert.ToDouble(random.Next(5, 11));
+                double attack = Convert.ToDouble(random.Next(8, 16));
+                double defense = Convert.ToDouble(random.Next(10, 21));
                 Enemy enemy = new(hp, attack, defense);
                 Console.WriteLine($"Перед вами {enemy.EnemyName}");
                     while (enemy.IsAlive && player.IsAlive)
@@ -374,6 +385,7 @@ namespace Pr6
                                         break;
                                     case 2:
                                         enemy.Enemy_Attack(random, player, true);
+                                        enemy.HP -= (player.Attack() * 0.5);
                                         //Console.WriteLine($"ХП врага - {enemy.HP}, ваше ХП - {player.HP}");
                                         break;
                                 }
@@ -454,6 +466,7 @@ namespace Pr6
                                 break;
                             case 2:
                                 boss.Enemy_Attack(random, player, true);
+                                boss.HP -= (player.Attack() * 0.5);
                                 //Console.WriteLine($"ХП врага - {enemy.HP}, ваше ХП - {player.HP}");
                                 break;
                         }
@@ -461,8 +474,8 @@ namespace Pr6
                     else
                     {
                         Console.WriteLine("Вас заморозили, скип");
-                        boss.Enemy_Attack(random, player, true);
                         player.isFrized = false;
+                        boss.Enemy_Attack(random, player, true);
                         continue;
                     }
                 }
@@ -483,7 +496,7 @@ namespace Pr6
 
             public void Event(Random random, Player Mainplayer, List<Weapon> weapons, List<Armor> armors)
             {
-                Console.Write("Сундук, а в нем...");
+                Console.Write("Сундук, а в нем... ");
                 int choice = random.Next(1, 4);
                 switch (choice) 
                 {
@@ -524,7 +537,8 @@ namespace Pr6
             public void EndGame(Player Mainplayer)
             {
                 if (!Mainplayer.IsAlive) {
-                    Console.WriteLine("Вы бездарь и умерли");    
+                    Console.WriteLine("Вы бездарь и умерли");
+                    Console.WriteLine($"Прожито ходов: {turn}");
                     return; 
                 }
                 else if (turn > 50)
