@@ -108,14 +108,54 @@ namespace Pr5
                 students.Add(student);
             }
 
-            public void EnrollmentOnCourse()
+            public void EnrollmentOnCourse(List<Course> courses, List<Student> students)
             {
+                Console.WriteLine("Все студенты:");
+                foreach (var student in students) student.PrintInfo();
 
+                string choicedstudentname;
+                while (true)
+                {
+                    Console.Write("Введите ФИО студента, которого надо записать: ");
+                    choicedstudentname = Console.ReadLine()?.Trim();
+
+                    if (!string.IsNullOrWhiteSpace(choicedstudentname))
+                    {
+                        break;
+                    }
+                    Console.WriteLine("Ошибка! Имя не может быть пустым. Попробуйте снова.");
+                }
+
+                var choicedstudent = students.FirstOrDefault(s => s.FIO == choicedstudentname);
+                
+
+                Console.WriteLine("Все курсы:");
+                foreach (var course in courses) course.ShowAllInfo();
+
+                string choicedcoursename;
+                while (true)
+                {
+                    Console.Write("Введите название курса, на который вас записать: ");
+                    choicedcoursename = Console.ReadLine()?.Trim();
+
+                    if (!string.IsNullOrWhiteSpace(choicedcoursename))
+                    {
+                        break;
+                    }
+                    Console.WriteLine("Ошибка! Название курса не может быть пустым. Попробуйте снова.");
+                }
+
+                var choicedcourse = courses.FirstOrDefault(c => c.NameOfCourse == choicedcoursename);
+
+                choicedstudent.courses_of_student.Add(choicedcourse);
+                choicedcourse.StudentsOnCourse.Add(choicedstudent);
+                Console.WriteLine($"Студент {choicedstudent.FIO} успешно добавлен на курс {choicedcourse.NameOfCourse}");
             }
 
-            public void ShowAllCourses(List<Course> courses)
+            public void ShowAllCoursesOfStudent()
             {
-
+                Console.WriteLine("Все курсы, на которые записан студент:");
+                foreach (var course in courses_of_student) course.ShowAllInfo();
             }
         }
 
@@ -134,19 +174,20 @@ namespace Pr5
         class Course
         {
             public string NameOfCourse { get; private set; }
-            public Professor ProfessorOfCourse { get; private set; }
+            public Professor ProfessorOfCourse { get; set; }
             public List<Student> StudentsOnCourse { get; set; }
 
-            public Course(string nameOfCourse, Professor professorOfCourse)
+            public Course(string nameOfCourse)
             {
                 NameOfCourse = nameOfCourse;
-                ProfessorOfCourse = professorOfCourse;
             }
 
             public void CreateNewCourse(List<Course> courses)
             {
                 
             }
+
+
 
             public void ShowAllInfo()
             {
