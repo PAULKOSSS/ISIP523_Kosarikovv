@@ -253,6 +253,7 @@ namespace Pr5
                         choicedprofessor.courses_of_person.Add(choicedcourse);
                         choicedcourse.ProfessorOfCourse = choicedprofessor;
                         Console.WriteLine($"Профессор {choicedprofessor.FIO} успешно назначен на курс {choicedcourse.NameOfCourse}");
+                        break;
                     }
                     else Console.WriteLine("Профессор уже есть");
                 }
@@ -292,13 +293,14 @@ namespace Pr5
                 Course course = new(nameOfCourse);
                 Console.WriteLine($"Курс с названием {course.NameOfCourse} успешно создан; чтобы добавить преподавателя или студентов на курс выберите соответсвующие пункты в меню.");
                 Console.WriteLine("");
+                courses.Add(course);
             }
 
 
 
             public void ShowAllInfo()
             {
-                Console.WriteLine($"Курс - {NameOfCourse}, ведет его {ProfessorOfCourse.FIO}");
+                Console.WriteLine($"Курс - {NameOfCourse}, ведет его {((ProfessorOfCourse != null) ? (ProfessorOfCourse.FIO) : null)} ");
                 Console.WriteLine("");
             }
 
