@@ -380,12 +380,12 @@ namespace Pr6
                                 {
                                     case 1:
 
-                                        enemy.HP -= player.Attack();
+                                        enemy.HP -= (player.Attack() > enemy.Defense_value) ? player.Attack() : 0;
                                         enemy.Enemy_Attack(random, player, false);
                                         break;
                                     case 2:
                                         enemy.Enemy_Attack(random, player, true);
-                                        enemy.HP -= (player.Attack() * 0.5);
+                                        enemy.HP -= (player.Attack() > enemy.Defense_value) ? (player.Attack() * 0.5) : 0;
                                         //Console.WriteLine($"ХП врага - {enemy.HP}, ваше ХП - {player.HP}");
                                         break;
                                 }
